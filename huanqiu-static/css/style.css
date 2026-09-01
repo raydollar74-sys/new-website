@@ -241,3 +241,19 @@ table.simple th { background: #f9fafb; }
 .impact-cards + .stats, .impact-cards ~ .stats { margin-top: 44px; }
 .impact-quote { margin-top: 52px; background: linear-gradient(90deg, #fefce8, #fff7ed); border-radius: 16px; padding: 34px 26px; text-align: center; }
 .impact-quote p { font-size: 19px; font-style: italic; color: #1f2937; max-width: 820px; margin: 0 auto 20px; }
+
+/* ---------- Impact section: spacing matched to live design ---------- */
+.impact { padding: 80px 0; }
+.impact .center { margin-bottom: 48px; }
+.impact .rule { margin: 0 auto; }
+.impact .split { gap: 48px; margin-bottom: 64px; }
+.impact .media-box img { height: 450px; }
+.impact .impact-cards { margin: 0 0 48px; gap: 24px; }
+.impact .stats { margin-top: 0; gap: 24px; }
+.impact .stat .lbl { text-transform: none; letter-spacing: normal; }
+.impact .impact-quote { margin-top: 48px; }
+.icon-sq { width: 48px; height: 48px; background: #fef9c3; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; color: #ca8a04; }
+.icon-sq svg { width: 24px; height: 24px; }
+.impact-card h3 svg { width: 28px; height: 28px; color: #eab308; flex: none; }
+.commit-box li { display: flex; align-items: flex-start; gap: 8px; }
+.commit-box li svg { width: 18px; height: 18px; color: #eab308; flex: none; margin-top: 2px; }
