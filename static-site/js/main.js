@@ -21,13 +21,22 @@
         col.appendChild(c);
       });
       var contact = document.createElement('a');
-      contact.href = 'contact.html';
+      contact.href = menuBtn.closest('nav') ? rel('contact.html') : 'contact.html';
       contact.className = 'bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold text-center';
       contact.textContent = 'CONTACT US';
       col.appendChild(contact);
       mobileMenu.appendChild(col);
       menuBtn.closest('nav').appendChild(mobileMenu);
     });
+  }
+
+  /* Resolve a root-relative page/file against this page's folder (works in subfolders too) */
+  function rel(p) {
+    var here = location.pathname.split('/');
+    here.pop();
+    var depth = here.length - 1; // 0 when served from root
+    // static-site pages live at root or one level deep (services/)
+    return (location.pathname.indexOf('/services/') === 0 ? '../' : '') + p;
   }
 
   /* ---------- Hero image slider ---------- */
@@ -136,9 +145,101 @@
   }
 
   $$('button').forEach(function (b) {
-    var t = (b.textContent || '').trim();
-    if (t === 'OUR COMPANY') b.addEventListener('click', openModal);
-    if (t === 'EXPLORE SERVICES') b.addEventListener('click', function () { location.href = 'services.html'; });
+    var t = (b.textContent || '').trim().toUpperCase();
+    if (t.indexOf('ASSAY') !== -1 || t === 'OUR COMPANY') b.addEventListener('click', openModal);
+    if (t === 'EXPLORE SERVICES') b.addEventListener('click', function () { location.href = rel('services.html'); });
+  });
+
+  /* ---------- Gallery category filter ---------- */
+  var filterBtns = $$('button.px-4.py-2.rounded-full');
+  if (filterBtns.length) {
+    var items = $$('.group.cursor-pointer');
+    function catOf(el) {
+      var img = el.querySelector('img,video');
+      var src = img ? (img.getAttribute('src') || '') : '';
+      if (src.indexOf('community') !== -1) return 'community';
+      if (src.indexOf('trading') !== -1) return 'trading';
+      if (src.indexOf('events') !== -1) return 'events';
+      if (src.indexOf('lab') !== -1) return 'laboratory';
+      if (src.indexOf('team') !== -1) return 'team';
+      return 'mining';
+    }
+    function keyOf(btn) {
+      var t = (btn.textContent || '').toLowerCase();
+      if (t.indexOf('all') !== -1) return 'all';
+      if (t.indexOf('community') !== -1) return 'community';
+      if (t.indexOf('trading') !== -1) return 'trading';
+      if (t.indexOf('events') !== -1) return 'events';
+      if (t.indexOf('lab') !== -1) return 'laboratory';
+      if (t.indexOf('team') !== -1) return 'team';
+      if (t.indexOf('mining') !== -1) return 'mining';
+      return 'all';
+    }
+    filterBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(function (b) {
+          var on = b === btn;
+          b.className = on
+            ? 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 bg-yellow-500 text-gray-900 shadow-md'
+            : 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 bg-gray-100 text-gray-600 hover:bg-gray-200';
+        });
+        var k = keyOf(btn);
+        items.forEach(function (it) {
+          it.style.display = (k === 'all' || catOf(it) === k) ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  /* ---------- Contact form via EmailJS REST API ---------- */
+  var contactForm = $('input[name="user_name"]');
+  if (contactForm) {
+    var form = contactForm.closest('form');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      fd.append('service_id', 'service_fcgw92b');
+      fd.append('template_id', 'template_ptn31nq');
+      fd.append('user_id', '84ih5THokCK_-adoF');
+      var banner = $('#form-banner');
+      function note(ok) {
+        if (!banner) {
+          banner = document.createElement('div');
+          banner.id = 'form-banner';
+          form.parentElement.insertBefore(banner, form);
+        }
+        banner.className = ok
+          ? 'mb-4 p-3 rounded-lg bg-green-100 text-green-800 text-sm'
+          : 'mb-4 p-3 rounded-lg bg-red-100 text-red-800 text-sm';
+        banner.textContent = ok
+          ? 'Message sent! We will get back to you within 24 hours.'
+          : 'Something went wrong. Please email info@huanqiupreciousmetal.com or use WhatsApp.';
+        setTimeout(function () { banner.remove(); }, 6000);
+      }
+      fetch('https://api.emailjs.com/api/v1.0/email/send-form', { method: 'POST', body: fd })
+        .then(function (r) {
+          if (!r.ok) throw new Error('emailjs ' + r.status);
+          form.reset();
+          note(true);
+        })
+        .catch(function () { note(false); });
+    });
+  }
+
+  /* ---------- Gallery fallback for missing images (like the original ImageWithFallback) ---------- */
+  $$('.group.cursor-pointer img').forEach(function (img) {
+    function fallback() {
+      var box = document.createElement('div');
+      box.className = 'bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center absolute inset-0';
+      box.innerHTML =
+        '<div class="text-center">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>' +
+          '<p class="text-xs text-gray-500">Image coming soon</p>' +
+        '</div>';
+      img.replaceWith(box);
+    }
+    if (img.complete && img.naturalWidth === 0) fallback();
+    else img.addEventListener('error', fallback);
   });
 
   /* ---------- Floating WhatsApp ---------- */
