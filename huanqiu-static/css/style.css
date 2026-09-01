@@ -284,7 +284,7 @@ table.simple th { background: #f9fafb; }
 .voice-head h4 { color: #fff; }
 .voice-head p { font-size: 13px; color: #9ca3af; }
 .avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(248,180,0,.2); color: #f8b400; display: flex; align-items: center; justify-content: center; flex: none; }
-.voices .story { font-style: italic; color: #d1d5db; }
+.voices .card p.story { font-style: italic; color: #d1d5db; }
 .stars { color: #f8b400; margin-top: 14px; letter-spacing: 2px; }
 .values-box { margin-top: 64px; background: linear-gradient(90deg, rgba(248,180,0,.1), rgba(249,115,22,.1)); border: 1px solid rgba(248,180,0,.2); border-radius: 16px; padding: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center; }
 @media (max-width: 900px) { .values-box { grid-template-columns: 1fr; } }
@@ -293,3 +293,4 @@ table.simple th { background: #f9fafb; }
 .values-box p { font-size: 13px; color: #9ca3af; }
 .dk-cta { margin-top: 48px; text-align: center; }
 .dk-cta p { color: #d1d5db; max-width: 640px; margin: 0 auto 24px; }
+.voices { gap: 32px; }
