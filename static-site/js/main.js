@@ -226,24 +226,6 @@
     });
   }
 
-  /* ---------- Video fallback: if a clip can't play, show a repo image instead ---------- */
-  $$('video').forEach(function (v) {
-    var done = false;
-    function fail() {
-      if (done) return;
-      done = true;
-      var img = document.createElement('img');
-      img.src = rel('images/1.jpeg');
-      img.alt = 'Video unavailable';
-      img.className = 'w-full h-full object-cover';
-      v.replaceWith(img);
-    }
-    v.addEventListener('error', fail);
-    var srcEl = v.querySelector('source');
-    if (srcEl) srcEl.addEventListener('error', fail);
-    setTimeout(function () { if (v.readyState === 0) fail(); }, 5000);
-  });
-
   /* ---------- Gallery fallback for missing images (like the original ImageWithFallback) ---------- */
   $$('.group.cursor-pointer img').forEach(function (img) {
     function fallback() {
